@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 import datetime
 from peewee import *
 
@@ -41,11 +42,13 @@ db.connect()
 # Create the required tables
 db.create_tables([User, Story, Comment]) 
 
-# Primary database transactions methods:
 
 # Story Table Transactions
 def add_story(title: str, content: str):
     return Story.create(title=title, content=content)
+
+def get_story_by_id(story_id: int):
+    return Story.get(Story.story_id == story_id)
 
 def get_all_stories():
     return Story.select()
@@ -58,11 +61,11 @@ def get_user_by_id(user_id: int):
     return User.get(User.user_id == user_id)
 
 def add_user(username: str, email: str, password: str):
-    return User.create(username=username, email=email, password=password)
+    return User.create(username=username, email=email, password=hashlib.sha512(password).hexdigest())
 
 # Comment Table Transactions
-def add_comment(content: str, user_id: int):
-    return Comment.create(content=content, user_id=user_id)
+def add_comment(content: str, user_id: int, story_id: int):
+    return Comment.create(content=content, user_id=user_id, story_id=story_id)
 
 def get_comment_by(comment_id: str):
     return Comment.create(Comment.comment_id == comment_id)
