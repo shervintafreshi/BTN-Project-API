@@ -1,71 +1,84 @@
 import sqlite3
 import hashlib
 import datetime
-from peewee import *
 
 # Initialize the database connection
-db = SqliteDatabase('./database/btn_database.db')
-
-# Define Meta Table 
-class BaseModel(Model):
-    class Meta:
-        database = db      
+db_connection = sqlite3.connect('./database/btn_database.db')
 
 """
+
 Primary Table Definitions:
      User: Table for managing accounts.
      Project: Table for managing the various stories.
      Comment: Table for managing the various comments.
+
+Table User:
+    user_id = Integer(primary_key=True)
+    username = Varchar(unique=True)
+    email = Varchar(unique=True)
+    password = Varchar()
+
+Table Story:
+    story_id = Integer(primary_key=True)
+    title = Varchar(unique=True)
+    content =  Varchar()
+
+Table Comment:
+    comment_id = Integer(primary_key=True)
+    content = Varchar()
+    date_posted = Date(default=datetime.datetime.now)
+    story_id = ForeignKey(Story, backref='comments') 
+    user_id = ForeignKey(User, backref='comments')
+
 """
 
-class User(BaseModel):
-    user_id = AutoField(primary_key=True)
-    username = CharField(unique=True)
-    email = CharField(unique=True)
-    password = CharField()
-
-class Story(BaseModel):
-    story_id = AutoField(primary_key=True)
-    title = CharField(unique=True)
-    content =  TextField()
-
-class Comment(BaseModel):
-    comment_id = AutoField(primary_key=True)
-    content = TextField()
-    date_posted = DateTimeField(default=datetime.datetime.now)
-    story_id = ForeignKeyField(Story, backref='comments') 
-    user_id = ForeignKeyField(User, backref='comments')
-
-
-# Initalize connection to database
-db.connect()
-# Create the required tables
-db.create_tables([User, Story, Comment]) 
-
-
 # Story Table Transactions
-def add_story(title: str, content: str) -> Story:
-    return Story.create(title=title, content=content)
+def get_story_by_id(story_id: int) -> dict:
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM Story WHERE story_id = ?", (story_id,))
+    story = cursor.fetchone()
+    return story
 
-def get_story_by_id(story_id: int) -> Story:
-    return Story.get(Story.story_id == story_id)
+def get_all_stories() -> list[dict]:
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM Story")
+    stories = cursor.fetchall()
+    return stories
 
-def get_all_stories() -> list[Story]:
-    return Story.select()
+def add_story(title: str, content: str) -> None:
+    cursor = db_connection.cursor()
+    cursor.execute("INSERT INTO Story (title, content) VALUES (?, ?)", (title, content))
+    db_connection.commit()
 
 # User Table Transactions
-def get_user_by_username(username: str) -> User:
-    return User.get(User.username == username)
+def get_user_by_username(username: str) -> dict:
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM User WHERE username = ?", (username,))
+    user = cursor.fetchone()
+    return user
 
-def get_user_by_id(user_id: int) -> User:
-    return User.get(User.user_id == user_id)
+def get_user_by_id(user_id: int) -> dict:
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM User WHERE user_id = ? " (user_id,))
+    user = cursor.fetchone()
+    return user
 
-def add_user(username: str, email: str, password: str) -> User:
-    return User.create(username=username, email=email, password=hashlib.sha512(password).hexdigest())
+def add_user(username: str, email: str, password: str) -> None:
+    cursor = db_connection.cursor()
+    cursor.execute("INSERT INTO User (username, email, password) VALUES (?, ?, ?)", (username, email, hashlib.sha512(password).hexdigest()))
+    db_connection.commit()
 
 # Comment Table Transactions
-def add_comment(content: str, user_id: int, story_id: int) -> Comment:
-    return Comment.create(content=content, user_id=user_id, story_id=story_id)
+def add_comment(content: str, user_id: int, story_id: int) -> None:
+    cursor = db_connection.cursor()
+    cursor.execute("INSERT INTO Comment (content, user_id, story_id) VALUES (?, ?, ?)", (content, user_id, story_id))
+    db_connection.commit()
 
-def get_comment_by(comment_id: str) -> Comment:
-    return Comment.create(Comment.comment_id == comment_id)
+def get_comment_by_id(comment_id: str) -> dict:
+    cursor = db.connection.cursor()
+    cursor.execute("SELECT * FROM Comment WHERE comment_id = ?", (comment_id,))
+    comment = cursor.fetchone()
+    return comment
+
+
+

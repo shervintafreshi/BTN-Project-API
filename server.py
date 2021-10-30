@@ -1,11 +1,13 @@
 import hashlib, uuid
 import json, jwt
+from scripts.populate_db import *
 from managers.db_manager import *
 from pydantic import BaseModel
 from typing import Optional
 from fastapi import FastAPI, Response, Cookie
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+from typing import List
 
 # Generate fast API object
 app = FastAPI()
@@ -24,11 +26,9 @@ class Credentials(BaseModel):
 @app.get("/")
 async def read_root():
     return {"Name": "BTN Term Project API",
-            "Version": "1.0", 
+            "Version": "1.5", 
             "Author": "Shervin Tafreshipour",
-            "Description": """backend API constructed to handle the various requests
-                              types emitted from the frontend React Application
-                           """
+            "Description": "backend API constructed to handle various requests"
             }
 
 # Request a single story object
@@ -81,8 +81,3 @@ async def user_logout(token: Optional[str] = Cookie(None)):
     jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)}, "SECRET_KEY", algorithm='HS256')
     response.set_cookie(key='token', value=jwt_token)
     return {"authenticated": False}
-
-# Temporary route to call populate database
-@app.post("/database/populate")
-async def populate_database():
-    return {}
