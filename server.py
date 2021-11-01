@@ -1,5 +1,6 @@
 import hashlib, uuid
-import json, jwt
+import os, json, jwt
+from dotenv import load_dotenv
 from scripts.populate_db import *
 from managers.db_manager import *
 from pydantic import BaseModel
@@ -12,6 +13,9 @@ from typing import List
 # Generate fast API object
 app = FastAPI()
 
+# Load in environment variables
+load_dotenv()
+
 # Post Request Models
 class Comment(BaseModel):
     content: str
@@ -22,25 +26,34 @@ class Credentials(BaseModel):
     username: str
     password: str
 
+# Get Response Models
+class Story(BaseModel):
+    id: int
+    title: str
+    content: str
+
+
 # Primary API Routes
 @app.get("/")
 async def read_root():
-    return {"Name": "BTN Term Project API",
+    return JSONResponse({"Name": "BTN Term Project API",
             "Version": "1.5", 
             "Author": "Shervin Tafreshipour",
             "Description": "backend API constructed to handle various requests"
-            }
+            })
 
 # Request a single story object
-@app.get("/stories/{item_id}")
+@app.get("/stories/{item_id}", response_model=Story)
 async def read_item(item_id: int, q: Optional[str] = None):
     story = get_story_by_id(item_id)
     return JSONResponse(content=jsonable_encoder(story))
 
 # Request all user stories
-@app.get("/stories/all")
+@app.get("/stories", response_model=List[Story])
 async def get_stories():
     stories = get_all_stories()
+    # call for comments
+    # append comments to stories
     return JSONResponse(content=jsonable_encoder(stories))
 
 # Request to add comment to story
@@ -56,7 +69,7 @@ async def user_login(response: Response, credentials: Credentials):
     user = get_user_by_username(credentials.username)
     if user and user.password == hashlib.sha512(credentials.password).hexdigest():
         response_content = {"authenticated": True}
-        jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)} + datetime.timedelta(minutes=10), "SECRET_KEY", algorithm='HS256')
+        jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)} + datetime.timedelta(minutes=10), os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token', value=jwt_token)
     else:
         response_content = {"authenticated": False}
@@ -78,6 +91,6 @@ async def user_authentication(token: Optional[str] = Cookie(None)):
 # Request to logout user
 @app.get("/account/logout")
 async def user_logout(token: Optional[str] = Cookie(None)):
-    jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)}, "SECRET_KEY", algorithm='HS256')
+    jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
     response.set_cookie(key='token', value=jwt_token)
     return {"authenticated": False}

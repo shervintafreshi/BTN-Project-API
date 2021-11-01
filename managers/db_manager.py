@@ -1,3 +1,4 @@
+import json
 import sqlite3
 import hashlib
 import datetime
@@ -35,15 +36,17 @@ Table Comment:
 # Story Table Transactions
 def get_story_by_id(story_id: int) -> dict:
     cursor = db_connection.cursor()
+    db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor.execute("SELECT * FROM Story WHERE story_id = ?", (story_id,))
     story = cursor.fetchone()
     return story
 
 def get_all_stories() -> list[dict]:
+    db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
     stories = cursor.fetchall()
-    return stories
+    return json.dumps([dict(ix) for ix in stories])
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
@@ -79,6 +82,3 @@ def get_comment_by_id(comment_id: str) -> dict:
     cursor.execute("SELECT * FROM Comment WHERE comment_id = ?", (comment_id,))
     comment = cursor.fetchone()
     return comment
-
-
-
