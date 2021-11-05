@@ -64,7 +64,7 @@ async def get_stories():
     stories = get_all_stories()
     # call for comments
     # append comments to stories
-    return JSONResponse(content=jsonable_encoder(stories))
+    return JSONResponse(content=stories)
 
 # Request to add comment to story
 @app.post("/stories/add_comment")
