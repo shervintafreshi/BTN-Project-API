@@ -1,7 +1,6 @@
 import hashlib, uuid
 import os, json, jwt
 from dotenv import load_dotenv
-from scripts.populate_db import *
 from managers.db_manager import *
 from pydantic import BaseModel
 from typing import Optional
