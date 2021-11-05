@@ -55,10 +55,10 @@ async def get_stories():
     # call for comments
     comments = get_all_comments()
     if len(comments) > 2:
-    for story in stories:
-        for comment in comments:
-            if comment.story_id == story.id:
-                story.comments.append(comment)
+        for story in stories:
+            for comment in comments:
+                if comment.story_id == story.id:
+                    story.comments.append(comment)
     # append comments to stories
     return JSONResponse(content=jsonable_encoder(stories))
 
