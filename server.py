@@ -70,7 +70,7 @@ async def get_stories():
 @app.post("/stories/add_comment")
 async def add_story_comment(comment: Comment):
     comment = add_story_comment(comment.content, comment.user_id, comment.story_id)
-    return content=Response(content=comment)
+    return Response(content=comment)
 
 # Request to add user login   
 @app.post("/user/login")
