@@ -33,7 +33,7 @@ class Comment(BaseModel):
     story_id: int
 
 class Credentials(BaseModel):
-    username: str
+    email: str
     password: str
 
 # Get Response Models
