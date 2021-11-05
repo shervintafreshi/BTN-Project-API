@@ -62,7 +62,7 @@ def get_user_by_username(username: str) -> dict:
 
 def get_user_by_id(user_id: int) -> dict:
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE user_id = ? " (user_id,))
+    cursor.execute("SELECT * FROM User WHERE user_id = ? ", (user_id,))
     user = cursor.fetchone()
     return user
 
