@@ -77,7 +77,7 @@ async def add_story_comment(comment: Comment):
 async def user_login(response: Response, credentials: Credentials):
     response_content = None
     user = get_user_by_email(credentials.email)
-    if user and user.password == hashlib.sha512(credentials.password).hexdigest():
+    if user and user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
         response_content = {"authenticated": True}
         jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)} + datetime.timedelta(minutes=10), os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token', value=jwt_token)

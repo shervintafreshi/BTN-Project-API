@@ -67,10 +67,11 @@ def get_user_by_id(user_id: int) -> dict:
     return user
 
 def get_user_by_email(email: str) -> dict:
+    db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM User WHERE email = ?", (email,))
     user = cursor.fetchone()
-    return user
+    return dict(user)
 
 def add_user(username: str, email: str, password: str) -> None:
     cursor = db_connection.cursor()
