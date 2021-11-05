@@ -82,3 +82,20 @@ def get_comment_by_id(comment_id: str) -> dict:
     cursor.execute("SELECT * FROM Comment WHERE comment_id = ?", (comment_id,))
     comment = cursor.fetchone()
     return comment
+
+def get_all_comments() -> list[dict]:
+    db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM Comment")
+    comments = cursor.fetchall()
+    return json.dumps([dict(ix) for ix in comments])
+
+
+stories = get_all_stories()
+comments = get_all_comments()
+
+
+# for story in stories:
+#     for comment in comments:
+#         if comment.story_id == story.id:
+#             story.comments.append(json.dumps(comment))
