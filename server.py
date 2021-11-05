@@ -70,13 +70,13 @@ async def get_stories():
 @app.post("/stories/add_comment")
 async def add_story_comment(comment: Comment):
     comment = add_story_comment(comment.content, comment.user_id, comment.story_id)
-    return JSONResponse(content=jsonable_encoder(comment))
+    return content=Response(content=comment)
 
 # Request to add user login   
 @app.post("/user/login")
 async def user_login(response: Response, credentials: Credentials):
     response_content = None
-    user = get_user_by_username(credentials.username)
+    user = get_user_by_email(credentials.email)
     if user and user.password == hashlib.sha512(credentials.password).hexdigest():
         response_content = {"authenticated": True}
         jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)} + datetime.timedelta(minutes=10), os.environ["SECRET_KEY"], algorithm='HS256')

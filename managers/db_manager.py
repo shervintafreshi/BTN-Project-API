@@ -66,6 +66,12 @@ def get_user_by_id(user_id: int) -> dict:
     user = cursor.fetchone()
     return user
 
+def get_user_by_email(email: str) -> dict:
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM User WHERE email = ?", (email,))
+    user = cursor.fetchone()
+    return user
+
 def add_user(username: str, email: str, password: str) -> None:
     cursor = db_connection.cursor()
     cursor.execute("INSERT INTO User (username, email, password) VALUES (?, ?, ?)", (username, email, hashlib.sha512(password).hexdigest()))
