@@ -60,7 +60,7 @@ async def read_item(item_id: int, q: Optional[str] = None):
     for comment in comments:
         if comment["story_id"] == story["story_id"]:
             story["comments"].append(comment)
-    return JSONResponse(content=story)
+    return JSONResponse(content=jsonable_encoder(story))
 
 # Request all user stories
 @app.get("/stories", response_model=List[Story])
