@@ -66,6 +66,13 @@ def get_user_by_id(user_id: int) -> dict:
     user = cursor.fetchone()
     return user
 
+def get_user_by_email(email: str) -> dict:
+    db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
+    cursor = db_connection.cursor()
+    cursor.execute("SELECT * FROM User WHERE email = ?", (email,))
+    user = cursor.fetchone()
+    return dict(user)
+
 def add_user(username: str, email: str, password: str) -> None:
     cursor = db_connection.cursor()
     cursor.execute("INSERT INTO User (username, email, password) VALUES (?, ?, ?)", (username, email, hashlib.sha512(password).hexdigest()))
@@ -90,12 +97,8 @@ def get_all_comments() -> list[dict]:
     comments = cursor.fetchall()
     return json.dumps([dict(ix) for ix in comments])
 
-
-stories = get_all_stories()
-comments = get_all_comments()
-
-
-# for story in stories:
-#     for comment in comments:
-#         if comment.story_id == story.id:
-#             story.comments.append(json.dumps(comment))
+# Fixing issue with hashing
+user = get_user_by_email("admin@blog.com")
+encoded_passed_password = hashlib.sha512("2b$12$ci8CBzFmJwlyy0QIgClT9O1P0VM.inoDQV.htYfA2SdG04tr2dbv2".encode()).hexdigest()
+print("User name: ", encoded_passed_password)
+print("User Password: ", user['password'])
