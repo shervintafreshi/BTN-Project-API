@@ -70,6 +70,8 @@ async def get_stories():
     comments = get_all_comments()
     if len(comments) > 0:
         for story in stories:
+            print(type(story))
+            print(type(comments))
             story["comments"] = []
             for comment in comments:
                 if comment["story_id"] == story["story_id"]:
