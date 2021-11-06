@@ -41,7 +41,7 @@ def get_story_by_id(story_id: int) -> dict:
     story = cursor.fetchone()
     return story
 
-def get_all_stories() -> list[dict]:
+def get_all_stories() -> str:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
