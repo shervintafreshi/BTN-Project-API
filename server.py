@@ -75,7 +75,7 @@ async def get_stories():
                 if comment["story_id"] == story["story_id"]:
                     story["comments"].append(comment)
     # append comments to stories
-    return Response(content=jsonable_encoder(stories))
+    return JSONResponse(content=jsonable_encoder(stories))
 
 # Request to add comment to story
 @app.post("/stories/add_comment")

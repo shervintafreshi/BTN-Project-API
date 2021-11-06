@@ -96,6 +96,5 @@ def get_all_comments() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment")
     comments = cursor.fetchall()
-    print(type([dict(ix) for ix in comments]))
     return [dict(ix) for ix in comments]
 
