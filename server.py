@@ -74,7 +74,7 @@ async def user_login(response: Response, credentials: Credentials):
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
         response_content = {"authenticated": True}
-        jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)} + datetime.timedelta(minutes=10), os.environ["SECRET_KEY"], algorithm='HS256')
+        jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token', value=jwt_token)
     else:
         response_content = {"authenticated": False}
@@ -96,6 +96,6 @@ async def user_authentication(token: Optional[str] = Cookie(None)):
 # Request to logout user
 @app.get("/account/logout")
 async def user_logout(token: Optional[str] = Cookie(None)):
-    jwt_token = jwt.encode({"exp": datetime.now(tz=timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
+    jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
     response.set_cookie(key='token', value=jwt_token)
     return {"authenticated": False}
