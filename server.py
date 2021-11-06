@@ -41,6 +41,7 @@ class Story(BaseModel):
     id: int
     title: str
     content: str
+    comment: Comment
 
 
 # Primary API Routes
@@ -57,10 +58,11 @@ async def read_root():
 async def read_item(item_id: int, q: Optional[str] = None):
     story = get_story_by_id(item_id)
     comments = get_all_comments()
-    for comment in comments:
+    if len(comments) > 0:
         story["comments"] = []
-        if comment["story_id"] == story["story_id"]:
-            story["comments"].append(comment)
+        for comment in comments:
+            if comment["story_id"] == story["story_id"]:
+                story["comments"].append(comment)
     return JSONResponse(content=jsonable_encoder(story))
 
 # Request all user stories
