@@ -81,7 +81,8 @@ def add_user(username: str, email: str, password: str) -> None:
 # Comment Table Transactions
 def add_comment(content: str, user_id: int, story_id: int) -> None:
     cursor = db_connection.cursor()
-    cursor.execute("INSERT INTO Comment (content, user_id, story_id) VALUES (?, ?, ?)", (content, user_id, story_id))
+    date_posted = datetime.datetime.now()
+    cursor.execute("INSERT INTO Comment (content, user_id, story_id, date_posted) VALUES (?, ?, ?, ?)", (content, user_id, story_id, date_posted))
     db_connection.commit()
 
 def get_comment_by_id(comment_id: str) -> dict:
