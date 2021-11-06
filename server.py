@@ -56,15 +56,25 @@ async def read_root():
 @app.get("/stories/{item_id}", response_model=Story)
 async def read_item(item_id: int, q: Optional[str] = None):
     story = get_story_by_id(item_id)
-    return JSONResponse(content=jsonable_encoder(story))
+        for comment in comments:
+            if comment["story_id"] == story["story_id"]:
+                story["comments"].append(comment)
+    return Response(content=story)
 
 # Request all user stories
 @app.get("/stories", response_model=List[Story])
 async def get_stories():
     stories = get_all_stories()
     # call for comments
+    comments = get_all_comments()
+    if len(comments) > 0:
+        for story in stories:
+            story["comments"] = []
+            for comment in comments:
+                if comment["story_id"] == story["story_id"]:
+                    story["comments"].append(comment)
     # append comments to stories
-    return Response(content=stories)
+    return Response(content=jsonable_encoder(stories))
 
 # Request to add comment to story
 @app.post("/stories/add_comment")
