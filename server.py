@@ -90,7 +90,7 @@ async def user_login(response: Response, credentials: Credentials):
 async def user_authentication(token: Optional[str] = Cookie(None)):
     response_content = None
     try:
-        jwt.decode(token, "SECRET_KEY", algorithms=["HS256"])
+        jwt.decode(token, os.environ["SECRET_KEY"], algorithms=["HS256"])
         response.set_cookie(key='token', value=token)
         response_content = {"authenticated": True}
     except jwt.ExpiredSignatureError:
