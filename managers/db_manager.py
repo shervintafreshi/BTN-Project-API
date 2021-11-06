@@ -46,7 +46,7 @@ def get_all_stories() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
     stories = cursor.fetchall()
-    return [dict(ix) for ix in stories]
+    return json.dumps([dict(ix) for ix in stories])
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
@@ -98,8 +98,3 @@ def get_all_comments() -> str:
     comments = cursor.fetchall()
     return [dict(ix) for ix in comments]
 
-# Fixing issue with hashing
-user = get_user_by_email("admin@blog.com")
-encoded_passed_password = hashlib.sha512("2b$12$ci8CBzFmJwlyy0QIgClT9O1P0VM.inoDQV.htYfA2SdG04tr2dbv2".encode()).hexdigest()
-print("User name: ", encoded_passed_password)
-print("User Password: ", user['password'])
