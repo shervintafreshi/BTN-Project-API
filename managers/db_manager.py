@@ -46,7 +46,7 @@ def get_all_stories() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
     stories = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in stories])
+    return [dict(ix) for ix in stories]
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
@@ -81,7 +81,8 @@ def add_user(username: str, email: str, password: str) -> None:
 # Comment Table Transactions
 def add_comment(content: str, user_id: int, story_id: int) -> None:
     cursor = db_connection.cursor()
-    cursor.execute("INSERT INTO Comment (content, user_id, story_id) VALUES (?, ?, ?)", (content, user_id, story_id))
+    date_posted = datetime.datetime.now()
+    cursor.execute("INSERT INTO Comment (content, user_id, story_id, date_posted) VALUES (?, ?, ?, ?)", (content, user_id, story_id, date_posted))
     db_connection.commit()
 
 def get_comment_by_id(comment_id: str) -> dict:
@@ -95,7 +96,7 @@ def get_all_comments() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment")
     comments = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in comments])
+    return [dict(ix) for ix in comments]
 
 # Fixing issue with hashing
 user = get_user_by_email("admin@blog.com")

@@ -53,18 +53,19 @@ async def get_stories():
     stories = get_all_stories()
     # call for comments
     comments = get_all_comments()
-    if len(comments) > 2:
+    if len(comments) > 0:
         for story in stories:
+            story["comments"] = []
             for comment in comments:
-                if comment.story_id == story.id:
-                    story.comments.append(comment)
+                if comment["story_id"] == story["story_id"]:
+                    story["comments"].append(comment)
     # append comments to stories
     return JSONResponse(content=jsonable_encoder(stories))
 
 # Request to add comment to story
 @app.post("/stories/add_comment")
 async def add_story_comment(comment: Comment):
-    comment = add_story_comment(comment.content, comment.user_id, comment.story_id)
+    comment = add_comment(comment.content, comment.user_id, comment.story_id)
     return JSONResponse(content=jsonable_encoder(comment))
 
 # Request to add user login   
