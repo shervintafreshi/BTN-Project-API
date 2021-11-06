@@ -56,9 +56,9 @@ async def read_root():
 @app.get("/stories/{item_id}", response_model=Story)
 async def read_item(item_id: int, q: Optional[str] = None):
     story = get_story_by_id(item_id)
-        for comment in comments:
-            if comment["story_id"] == story["story_id"]:
-                story["comments"].append(comment)
+    for comment in comments:
+        if comment["story_id"] == story["story_id"]:
+            story["comments"].append(comment)
     return JSONResponse(content=story)
 
 # Request all user stories
