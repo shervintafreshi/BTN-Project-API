@@ -46,7 +46,7 @@ def get_all_stories() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
     stories = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in stories])
+    return [dict(ix) for ix in stories]
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
@@ -96,7 +96,7 @@ def get_all_comments() -> str:
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment")
     comments = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in comments])
+    return [dict(ix) for ix in comments]
 
 # Fixing issue with hashing
 user = get_user_by_email("admin@blog.com")
