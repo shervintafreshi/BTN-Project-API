@@ -41,12 +41,12 @@ def get_story_by_id(story_id: int) -> dict:
     story = cursor.fetchone()
     return story
 
-def get_all_stories():
+def get_all_stories() -> str:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Story")
     stories = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in stories])
+    return [dict(ix) for ix in stories]
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
@@ -62,7 +62,7 @@ def get_user_by_username(username: str) -> dict:
 
 def get_user_by_id(user_id: int) -> dict:
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE user_id = ? " (user_id,))
+    cursor.execute("SELECT * FROM User WHERE user_id = ? ", (user_id,))
     user = cursor.fetchone()
     return user
 
@@ -81,7 +81,8 @@ def add_user(username: str, email: str, password: str) -> None:
 # Comment Table Transactions
 def add_comment(content: str, user_id: int, story_id: int) -> None:
     cursor = db_connection.cursor()
-    cursor.execute("INSERT INTO Comment (content, user_id, story_id) VALUES (?, ?, ?)", (content, user_id, story_id))
+    date_posted = datetime.datetime.now()
+    cursor.execute("INSERT INTO Comment (content, user_id, story_id, date_posted) VALUES (?, ?, ?, ?)", (content, user_id, story_id, date_posted))
     db_connection.commit()
 
 def get_comment_by_id(comment_id: str) -> dict:
@@ -90,9 +91,15 @@ def get_comment_by_id(comment_id: str) -> dict:
     comment = cursor.fetchone()
     return comment
 
-def get_all_comments():
+def get_all_comments() -> str:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment")
     comments = cursor.fetchall()
-    return json.dumps([dict(ix) for ix in comments])
+    return [dict(ix) for ix in comments]
+
+# Fixing issue with hashing
+user = get_user_by_email("admin@blog.com")
+encoded_passed_password = hashlib.sha512("2b$12$ci8CBzFmJwlyy0QIgClT9O1P0VM.inoDQV.htYfA2SdG04tr2dbv2".encode()).hexdigest()
+print("User name: ", encoded_passed_password)
+print("User Password: ", user['password'])
