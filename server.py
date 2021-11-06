@@ -67,13 +67,13 @@ async def read_item(item_id: int, q: Optional[str] = None):
 async def get_stories():
     stories = get_all_stories()
     # call for comments
-    # comments = get_all_comments()
-    # if len(comments) > 0:
-    #     for story in stories:
-    #         story["comments"] = []
-    #         for comment in comments:
-    #             if comment["story_id"] == story["story_id"]:
-    #                 story["comments"].append(comment)
+    comments = get_all_comments()
+    if len(comments) > 0:
+        for story in stories:
+            story["comments"] = []
+            for comment in comments:
+                if comment["story_id"] == story["story_id"]:
+                    story["comments"].append(comment)
     # append comments to stories
     return Response(content=jsonable_encoder(stories))
 
