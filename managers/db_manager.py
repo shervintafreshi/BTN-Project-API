@@ -90,7 +90,7 @@ def get_comment_by_id(comment_id: str) -> dict:
     comment = cursor.fetchone()
     return comment
 
-def get_all_comments() -> list[dict]:
+def get_all_comments() -> str:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment")
