@@ -103,7 +103,7 @@ async def user_login(response: Response, credentials: Credentials):
     return response_content
 
 # Request to authenticate JWT token
-@app.post("/account/authenticate")
+@app.get("/account/authenticate")
 async def user_authentication(response: Response, token: Optional[str] = Cookie(None)):
     response_content = None
     try:
