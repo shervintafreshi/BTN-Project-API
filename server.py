@@ -116,6 +116,12 @@ async def user_authentication(response: Response, token: Optional[str] = Cookie(
     except jwt.ExpiredSignatureError:
         # Signature has expired
         response_content = {"authenticated": False}
+    except jwt.InvalidTokenError:
+        # Invalid token
+        response_content = {"authenticated": False}
+    except jwt.exceptions.DecodeError:
+        # Invalid token
+        response_content = {"authenticated": False}
     return response_content
 
 # Request to logout user
