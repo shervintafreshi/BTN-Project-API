@@ -96,7 +96,14 @@ async def user_login(response: Response, credentials: Credentials):
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
         response_content = {"authenticated": True}
         jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
-        response.set_cookie(key='token', value=jwt_token)
+        response.set_cookie(key='token', 
+                            value=jwt_token, 
+                            httponly=True,
+                            max_age=1800,
+                            expires=1800,
+                            secure=True,
+                            same_site=None)
+                        )
         print (jwt_token)
     else:
         response_content = {"authenticated": False}
