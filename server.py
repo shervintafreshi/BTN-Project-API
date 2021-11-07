@@ -137,21 +137,21 @@ async def user_authentication(response: Response, token: Optional[str] = Cookie(
 # Request to logout user
 @app.get("/account/logout")
 async def user_logout(response: Response, token: Optional[str] = Cookie(None)):
-    try:
-        jwt_token = jwt.encode({"exp": datetime.datetime.now(
-            tz=datetime.timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
-        response.set_cookie(key='token', value=jwt_token)
-    except jwt.exceptions.InvalidSignatureError:
-        # invalid token passed in
-        response_content = {"authenticated": False}
-    except jwt.ExpiredSignatureError:
-        # Signature has expired
-        response_content = {"authenticated": False}
-    except jwt.InvalidTokenError:
-        # Invalid token
-        response_content = {"authenticated": False}
-    except jwt.exceptions.DecodeError:
-        # Invalid token
-        response_content = {"authenticated": False}
+    # try:
+    #     jwt_token = jwt.encode({"exp": datetime.datetime.now(
+    #         tz=datetime.timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
+    #     response.set_cookie(key='token', value=jwt_token)
+    # except jwt.exceptions.InvalidSignatureError:
+    #     # invalid token passed in
+    #     response_content = {"authenticated": False}
+    # except jwt.ExpiredSignatureError:
+    #     # Signature has expired
+    #     response_content = {"authenticated": False}
+    # except jwt.InvalidTokenError:
+    #     # Invalid token
+    #     response_content = {"authenticated": False}
+    # except jwt.exceptions.DecodeError:
+    #     # Invalid token
+    #     response_content = {"authenticated": False}
     response.delete_cookie(key="token")
     return {"authenticated": False}
