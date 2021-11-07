@@ -107,7 +107,8 @@ async def user_login(response: Response, credentials: Credentials):
                             max_age=1800,
                             expires=1800,
                             secure=True,
-                            samesite='None')
+                            samesite='None',
+                            domain='http://localhost:3000')
     else:
         response_content = {"authenticated": False}
     return response_content
