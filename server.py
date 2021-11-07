@@ -104,11 +104,10 @@ async def user_login(response: Response, credentials: Credentials):
         response.set_cookie(key='token',
                             value=jwt_token,
                             httponly=True,
-                            max_age=1800,
-                            expires=1800,
+                            max_age=60 * 60 * 24,
                             secure=True,
                             samesite='None',
-                            domain='localhost')
+                            )
     else:
         response_content = {"authenticated": False}
     return response_content
