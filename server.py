@@ -103,8 +103,6 @@ async def user_login(response: Response, credentials: Credentials):
                             expires=1800,
                             secure=True,
                             same_site=None)
-                        )
-        print (jwt_token)
     else:
         response_content = {"authenticated": False}
     return response_content
