@@ -86,7 +86,7 @@ def add_comment(content: str, user_id: int, story_id: int) -> None:
     db_connection.commit()
 
 def get_comment_by_id(comment_id: str) -> dict:
-    cursor = db.connection.cursor()
+    cursor = db_connection.cursor()
     cursor.execute("SELECT * FROM Comment WHERE comment_id = ?", (comment_id,))
     comment = cursor.fetchone()
     return comment

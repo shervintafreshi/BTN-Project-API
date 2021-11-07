@@ -1,5 +1,8 @@
-import hashlib, uuid
-import os, json, jwt
+import hashlib
+import uuid
+import os
+import json
+import jwt
 from dotenv import load_dotenv
 from managers.db_manager import *
 from pydantic import BaseModel
@@ -32,6 +35,7 @@ class Comment(BaseModel):
     user_id: int
     story_id: int
 
+
 class Credentials(BaseModel):
     email: str
     password: str
@@ -48,10 +52,10 @@ class Story(BaseModel):
 @app.get("/")
 async def read_root():
     return JSONResponse({"Name": "BTN Term Project API",
-            "Version": "1.5", 
-            "Author": "Shervin Tafreshipour",
-            "Description": "backend API constructed to handle various requests"
-            })
+                         "Version": "1.5",
+                         "Author": "Shervin Tafreshipour",
+                         "Description": "backend API constructed to handle various requests"
+                         })
 
 # Request a single story object
 @app.get("/stories/{item_id}", response_model=Story)
@@ -88,16 +92,17 @@ async def add_story_comment(comment: Comment):
     comment = add_comment(comment.content, comment.user_id, comment.story_id)
     return JSONResponse(content=jsonable_encoder(comment))
 
-# Request to add user login   
+# Request to add user login
 @app.post("/account/login")
 async def user_login(response: Response, credentials: Credentials):
     response_content = None
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
         response_content = {"authenticated": True}
-        jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) + datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
-        response.set_cookie(key='token', 
-                            value=jwt_token, 
+        jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) +
+                               datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
+        response.set_cookie(key='token',
+                            value=jwt_token,
                             httponly=True,
                             max_age=1800,
                             expires=1800,
@@ -133,9 +138,10 @@ async def user_authentication(response: Response, token: Optional[str] = Cookie(
 @app.get("/account/logout")
 async def user_logout(response: Response, token: Optional[str] = Cookie(None)):
     try:
-        jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
+        jwt_token = jwt.encode({"exp": datetime.datetime.now(
+            tz=datetime.timezone.utc)}, os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token', value=jwt_token)
-        except jwt.exceptions.InvalidSignatureError:
+    except jwt.exceptions.InvalidSignatureError:
         # invalid token passed in
         response_content = {"authenticated": False}
     except jwt.ExpiredSignatureError:
