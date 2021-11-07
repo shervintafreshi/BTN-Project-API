@@ -148,5 +148,6 @@ async def user_logout(response: Response, token: Optional[str] = Cookie(None)):
         response_content = {"authenticated": False}
     except jwt.exceptions.DecodeError:
         # Invalid token
-        response_content = {"aut
+        response_content = {"authenticated": False}
+    response.delete_cookie("Authorization")
     return {"authenticated": False}
