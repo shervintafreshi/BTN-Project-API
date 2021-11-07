@@ -89,7 +89,7 @@ async def add_story_comment(comment: Comment):
     return JSONResponse(content=jsonable_encoder(comment))
 
 # Request to add user login   
-@app.post("/user/login")
+@app.post("/account/login")
 async def user_login(response: Response, credentials: Credentials):
     response_content = None
     user = get_user_by_email(credentials.email)
