@@ -92,6 +92,13 @@ async def add_story_comment(comment: Comment):
     add_comment(comment.content, comment.user_id, comment.story_id)
     return JSONResponse({"Success": True})
 
+"""
+    Authentication:
+    Return user object with JWT token
+    store JWT token in cookie
+    store user object in local storage
+"""
+
 # Request to add user login
 @app.post("/account/login")
 async def user_login(response: Response, credentials: Credentials):
@@ -109,7 +116,10 @@ async def user_login(response: Response, credentials: Credentials):
                             samesite='None',
                             )
     else:
-        response_content = {"authenticated": False}
+        response_content = {"authenticated": False,
+                            "account_id": user["user_id"],
+                            "account_name": user["username"],
+                            "account_email":["email"]}
     return response_content
 
 # Request to authenticate JWT token
