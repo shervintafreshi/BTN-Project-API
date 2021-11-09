@@ -105,7 +105,11 @@ async def user_login(response: Response, credentials: Credentials):
     response_content = None
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
-        response_content = {"authenticated": True}
+        response_content = {"authenticated": True,
+                            "account_id": user["user_id"],
+                            "account_name": user["username"],
+                            "account_email":["email"]}}   
+
         jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) +
                                datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token',
@@ -116,10 +120,7 @@ async def user_login(response: Response, credentials: Credentials):
                             samesite='None',
                             )
     else:
-        response_content = {"authenticated": False,
-                            "account_id": user["user_id"],
-                            "account_name": user["username"],
-                            "account_email":["email"]}
+        response_content = {"authenticated": False }
     return response_content
 
 # Request to authenticate JWT token
