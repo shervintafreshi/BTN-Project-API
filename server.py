@@ -108,7 +108,7 @@ async def user_login(response: Response, credentials: Credentials):
         response_content = {"authenticated": True,
                             "account_id": user["user_id"],
                             "account_name": user["username"],
-                            "account_email":["email"]}}   
+                            "account_email":["email"]} 
 
         jwt_token = jwt.encode({"exp": datetime.datetime.now(tz=datetime.timezone.utc) +
                                datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
