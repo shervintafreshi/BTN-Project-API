@@ -103,6 +103,7 @@ async def user_login(response: Response, credentials: Credentials):
                                datetime.timedelta(minutes=10)}, os.environ["SECRET_KEY"], algorithm='HS256')
         response.set_cookie(key='token',
                             value=jwt_token,
+                            httponly=False,
                             max_age=60 * 60 * 24,
                             secure=True,
                             samesite='None',
