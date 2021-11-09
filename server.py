@@ -106,7 +106,7 @@ async def user_login(response: Response, credentials: Credentials):
                             httponly=True,
                             max_age=60 * 60 * 24,
                             secure=True,
-                            samesite='None',
+                            SameSite='None',
                             )
     else:
         response_content = {"authenticated": False}
