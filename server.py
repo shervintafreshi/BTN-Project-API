@@ -105,7 +105,7 @@ async def user_login(response: Response, credentials: Credentials):
                             value=jwt_token,
                             httponly=True,
                             max_age=60 * 60 * 24,
-                            # secure=True,
+                            secure=True,
                             samesite='None',
                             )
     else:
