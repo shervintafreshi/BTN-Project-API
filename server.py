@@ -177,4 +177,5 @@ async def user_logout(request: Request, response: Response, token: Optional[str]
 # Exception Handler for CSRF errors
 @app.exception_handler(CsrfProtectError)
 def csrf_protect_exception_handler(request: Request, exc: CsrfProtectError):
+  print("ALERT: CSRF error")
   return JSONResponse(status_code=exc.status_code, content={ 'detail':  exc.message })
