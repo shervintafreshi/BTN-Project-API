@@ -121,7 +121,7 @@ async def add_story_comment(request: Request, comment: Comment, csrf_protect: Cs
 
 # Request to add user login
 @app.post("/account/login")
-async def user_login(response: Response, credentials: Credentials, csrf_protect: CsrfProtect = Depends()):
+async def user_login(response: Response, credentials: Credentials):
     response_content = None
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
@@ -139,7 +139,7 @@ async def user_login(response: Response, credentials: Credentials, csrf_protect:
                             secure=True,
                             samesite='None',
                             )
-        csrf_protect.set_csrf_cookie(response)                    
+        #csrf_protect.set_csrf_cookie(response)                    
     else:
         response_content = {"authenticated": False }
     return response_content
