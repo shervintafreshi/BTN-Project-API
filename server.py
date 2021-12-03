@@ -125,6 +125,7 @@ async def user_login(response: Response, credentials: Credentials, csrf_protect:
     response_content = None
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
+        csrf_protect.set_csrf_cookie(response)
         response_content = {"authenticated": True,
                             "account_id": user["user_id"],
                             "account_name": user["username"],
@@ -138,8 +139,7 @@ async def user_login(response: Response, credentials: Credentials, csrf_protect:
                             max_age=60 * 60 * 24,
                             secure=True,
                             samesite='None',
-                            )
-        #csrf_protect.set_csrf_cookie(response)                    
+                            )                    
     else:
         response_content = {"authenticated": False }
     return response_content
