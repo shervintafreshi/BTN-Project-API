@@ -71,8 +71,8 @@ async def read_root():
 # Request a single story object
 @app.get("/stories/{item_id}", response_model=Story)
 async def read_item(request: Request, item_id: int, q: Optional[str] = None, csrf_protect: CsrfProtect = Depends()):
-    # CRSF protection
-    csrf_protect.validate_csrf_in_cookies(request)
+    # # CRSF protection
+    # csrf_protect.validate_csrf_in_cookies(request)
     # Get the story object
     story = get_story_by_id(item_id)
     # call for comments
@@ -88,8 +88,8 @@ async def read_item(request: Request, item_id: int, q: Optional[str] = None, csr
 # Request all user stories
 @app.get("/stories", response_model=List[Story])
 async def get_stories(request: Request, csrf_protect: CsrfProtect = Depends()):
-    # CRSF protection
-    csrf_protect.validate_csrf_in_cookies(request)
+    # # CRSF protection
+    # csrf_protect.validate_csrf_in_cookies(request)
     # Get all stories
     stories = get_all_stories()
     # call for comments
@@ -106,8 +106,8 @@ async def get_stories(request: Request, csrf_protect: CsrfProtect = Depends()):
 # Request to add comment to story
 @app.post("/stories/add_comment")
 async def add_story_comment(request: Request, comment: Comment, csrf_protect: CsrfProtect = Depends()):
-    # CRSF protection
-    csrf_protect.validate_csrf_in_cookies(request)
+    # # CRSF protection
+    # csrf_protect.validate_csrf_in_cookies(request)
     # Add comment to story
     add_comment(comment.content, comment.user_id, comment.story_id)
     return JSONResponse({"Success": True})
@@ -121,7 +121,7 @@ async def add_story_comment(request: Request, comment: Comment, csrf_protect: Cs
 
 # Request to add user login
 @app.post("/account/login")
-async def user_login(response: Response, credentials: Credentials):
+async def user_login(response: Response, credentials: Credentials, csrf_protect: CsrfProtect = Depends()):
     response_content = None
     user = get_user_by_email(credentials.email)
     if user['password'] == hashlib.sha512(credentials.password.encode()).hexdigest():
@@ -147,8 +147,6 @@ async def user_login(response: Response, credentials: Credentials):
 # Request to authenticate JWT token
 @app.get("/account/authenticate")
 async def user_authentication(request: Request, response: Response, token: Optional[str] = Cookie(None), csrf_protect: CsrfProtect = Depends()):
-    # CRSF protection
-    csrf_protect.validate_csrf_in_cookies(request)
     response_content = None
     try:
         jwt.decode(token, os.environ["SECRET_KEY"], algorithms=["HS256"])
