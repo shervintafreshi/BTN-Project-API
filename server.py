@@ -147,6 +147,8 @@ async def user_login(response: Response, credentials: Credentials, csrf_protect:
 # Request to authenticate JWT token
 @app.get("/account/authenticate")
 async def user_authentication(request: Request, response: Response, token: Optional[str] = Cookie(None), csrf_protect: CsrfProtect = Depends()):
+    # CRSF protection
+    csrf_protect.validate_csrf_in_cookies(request)
     response_content = None
     try:
         jwt.decode(token, os.environ["SECRET_KEY"], algorithms=["HS256"])
