@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 app = FastAPI()
 
 # Configure CORS
-origins = ["*"]
+origins = ["https://btn10-group-5.netlify.app/", "http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
