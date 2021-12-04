@@ -37,7 +37,7 @@ Table Comment:
 def get_story_by_id(story_id: int) -> dict:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM Story WHERE story_id = ?", (story_id,))
+    cursor.execute("SELECT * FROM Story WHERE story_id = %s", (story_id,))
     story = cursor.fetchone()
     return dict(story)
 
@@ -50,44 +50,44 @@ def get_all_stories() -> str:
 
 def add_story(title: str, content: str) -> None:
     cursor = db_connection.cursor()
-    cursor.execute("INSERT INTO Story (title, content) VALUES (?, ?)", (title, content))
+    cursor.execute("INSERT INTO Story (title, content) VALUES (%s, %s)", (title, content))
     db_connection.commit()
 
 # User Table Transactions
 def get_user_by_username(username: str) -> dict:
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE username = ?", (username,))
+    cursor.execute("SELECT * FROM User WHERE username = %s", (username,))
     user = cursor.fetchone()
     return user
 
 def get_user_by_id(user_id: int) -> dict:
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE user_id = ? ", (user_id,))
+    cursor.execute("SELECT * FROM User WHERE user_id = %s", (user_id,))
     user = cursor.fetchone()
     return user
 
 def get_user_by_email(email: str) -> dict:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM User WHERE email = ?", (email,))
+    cursor.execute("SELECT * FROM User WHERE email = %s", (email,))
     user = cursor.fetchone()
     return dict(user)
 
 def add_user(username: str, email: str, password: str) -> None:
     cursor = db_connection.cursor()
-    cursor.execute("INSERT INTO User (username, email, password) VALUES (?, ?, ?)", (username, email, hashlib.sha512(password).hexdigest()))
+    cursor.execute("INSERT INTO User (username, email, password) VALUES (%s, %s, %s)", (username, email, hashlib.sha512(password).hexdigest()))
     db_connection.commit()
 
 # Comment Table Transactions
 def add_comment(content: str, user_id: int, story_id: int) -> None:
     cursor = db_connection.cursor()
     date_posted = datetime.datetime.now()
-    cursor.execute("INSERT INTO Comment (content, user_id, story_id, date_posted) VALUES (?, ?, ?, ?)", (content, user_id, story_id, date_posted))
+    cursor.execute("INSERT INTO Comment (content, user_id, story_id, date_posted) VALUES (%s, %s, %s, %s)", (content, user_id, story_id, date_posted))
     db_connection.commit()
 
 def get_comment_by_id(comment_id: str) -> dict:
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM Comment WHERE comment_id = ?", (comment_id,))
+    cursor.execute("SELECT * FROM Comment WHERE comment_id = %s", (comment_id,))
     comment = cursor.fetchone()
     return comment
 
