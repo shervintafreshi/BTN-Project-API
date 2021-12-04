@@ -37,7 +37,7 @@ Table Comment:
 def get_story_by_id(story_id: int) -> dict:
     db_connection.row_factory = sqlite3.Row # This enables column access by name: row['column_name']
     cursor = db_connection.cursor()
-    cursor.execute("SELECT * FROM Story WHERE story_id = %s", (story_id,))
+    cursor.execute("SELECT * FROM Story WHERE story_id = ?", (story_id,))
     story = cursor.fetchone()
     return dict(story)
 
